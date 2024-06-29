@@ -11,7 +11,8 @@ class BaseDados:
     def __init__(self):
         self.elementos = []
         self.indexador = Indexador()
-        
+        self.proxima_matricula = 1 
+    
     def carregar_dados_iniciais(self):
         dados_iniciais = [
             (1, 'Aurelius', 'Engenharia', 8.5, 'Feminino'),
@@ -29,15 +30,12 @@ class BaseDados:
             self.adicionar_elemento(Elemento(*dado))
         
     def adicionar_elemento(self, elemento):
-        for el in self.elementos:
-            if el.matricula == elemento.matricula:
-                print(f"O Número de Matrícula {elemento.matricula} já existe.")
-                print("O estudante não foi adicionado!")
-                return
+        elemento.matricula = self.proxima_matricula
+        self.proxima_matricula += 1
         
         self.elementos.append(elemento)
         self.indexador.indexar(elemento)
-        print(f"Estudante com Número de Matrícula {elemento.matricula} adicionado!")
+        print(f"Estudante adicionado com Número de Matrícula {elemento.matricula}!")
 
     def remover_elemento(self, matricula):
         elemento = None
@@ -53,8 +51,7 @@ class BaseDados:
             print(f"Estudante com Número de Matrícula {matricula} removido!")
 
         else:
-            print(f"O Número de Matrícula {matricula} não existe.")
-            print("O estudante não foi removido!")
+            print(f"O Número de Matrícula {matricula} não existe. O estudante não foi removido!")
 
     def listar_elementos(self):
         if self.elementos:
@@ -145,7 +142,6 @@ class Interface:
                 break
     
     def adicionar_elemento(self):
-        matricula = int(input("Número de Matrícula: "))
         nome = input("Nome: ")
         curso = input("Curso: ")
         iaa = float(input("IAA: "))
@@ -153,17 +149,17 @@ class Interface:
         while True:
             print("1. Masculino")
             print("2. Feminino")
+            aux = input("Sexo: ")
 
-            campo = input("Sexo: ")
-            if campo == "1":
+            if aux == "1":
                 sexo = "Masculino"
                 break
-            elif campo == "2":
+            elif aux == "2":
                 sexo = "Feminino"
                 break
             print("Sexo incorreto!")
 
-        elemento = Elemento(matricula, nome, curso, iaa, sexo)
+        elemento = Elemento(None, nome, curso, iaa, sexo)  # Matrícula será atribuída automaticamente
         self.base_dados.adicionar_elemento(elemento)
     
     def remover_elemento(self):
