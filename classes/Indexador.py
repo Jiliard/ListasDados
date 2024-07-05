@@ -66,4 +66,5 @@ class Indexador:
       return self.index_todos
     
     def pegar_maior_indice(self):
-        return self.index_todos[-1]
+        if self.index_todos:
+            return self.index_todos[-1]
