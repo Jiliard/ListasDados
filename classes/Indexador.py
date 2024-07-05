@@ -6,7 +6,7 @@ class Indexador:
         self.index_todos = []
         self.index_curso = {}
         self.index_sexo = {}
-        self.index_iaa = []
+        self.index_iaa = {}
         self.indices_db = "Indices.csv"
 
     def setar_indices(self, dados):
@@ -18,13 +18,13 @@ class Indexador:
         self.index_todos.append(elemento.matricula)
         self._adicionar_a_index(self.index_curso, elemento.curso, elemento.matricula)
         self._adicionar_a_index(self.index_sexo, elemento.sexo, elemento.matricula)
-        self.index_iaa.append(elemento.matricula)
+        self.index_iaa[elemento.matricula] = float(elemento.iaa)
     
     def remover(self, elemento):
         self.index_todos.remove(elemento.matricula)
         self._remover_de_index(self.index_curso, elemento.curso, elemento.matricula)
         self._remover_de_index(self.index_sexo, elemento.sexo, elemento.matricula)
-        self.index_iaa.remove(elemento.matricula)
+        self.index_iaa.pop(elemento.matricula)
     
     def _adicionar_a_index(self, index, chave, matricula):
 
@@ -50,12 +50,20 @@ class Indexador:
             return self.index_sexo.get(valor, [])
         
         elif campo == 'iaa':
+            indices = []
             if comparador == 'menor':
-                return [el for el in self.index_iaa if el.iaa < valor]
+                for n in self.index_iaa:
+                    if self.index_iaa[n] < valor:
+                        indices = n
             elif comparador == 'maior':
-                return [el for el in self.index_iaa if el.iaa > valor]
+                for n in self.index_iaa:
+                    if self.index_iaa[n] > valor:
+                        indices = n
             elif comparador == 'igual':
-                return [el for el in self.index_iaa if el.iaa == valor]
+                for n in self.index_iaa:
+                    if self.index_iaa[n] == valor:
+                        indices = n
+            return indices
     
     def busca_composta(self, campo1, valor1, comparador1, campo2, valor2, comparador2):
         resultados1 = set(self.busca_simples(campo1, valor1, comparador1))

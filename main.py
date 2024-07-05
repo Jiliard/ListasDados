@@ -13,3 +13,10 @@ if __name__ == "__main__":
     if indexador.index_todos:
         base_dados.setar_proximo_indice(int(indexador.pegar_maior_indice()) + 1)
     interface.menu()
+
+
+
+
+
+
+    
