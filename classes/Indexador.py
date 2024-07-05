@@ -54,15 +54,15 @@ class Indexador:
             if comparador == 'menor':
                 for n in self.index_iaa:
                     if self.index_iaa[n] < valor:
-                        indices = n
+                        indices.append(n)
             elif comparador == 'maior':
                 for n in self.index_iaa:
                     if self.index_iaa[n] > valor:
-                        indices = n
+                        indices.append(n)
             elif comparador == 'igual':
                 for n in self.index_iaa:
                     if self.index_iaa[n] == valor:
-                        indices = n
+                        indices.append(n)
             return indices
     
     def busca_composta(self, campo1, valor1, comparador1, campo2, valor2, comparador2):
