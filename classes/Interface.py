@@ -11,14 +11,16 @@ class Interface:
     def menu(self):
         while True:
             print("\nMenu:")
-            print("1. Carregar 10 alunos iniciais")
+            print("1. Carregar 10 alunos")
             print("2. Adicionar Elemento")
             print("3. Remover Elemento")
             print("4. Buscar Simples")
             print("5. Buscar Composta")
             print("6. Listar Todos os Elementos")
             print("7. Ver todas os indices (sem acesso ao disco)")
-            print("8. Sair")
+            print("8. Busca simples apenas indices (sem acesso ao disco)")
+            print("9. Busca Composta apenas indices (sem acesso ao disco)")
+            print("10. Sair")
             opcao = input("Escolha uma opcao: ")
             
             if opcao == '1':
@@ -36,6 +38,10 @@ class Interface:
             elif opcao == '7':
                 self.listar_indices()
             elif opcao == '8':
+                print(self.buscar_simples_indices())
+            elif opcao == '9':
+                print(self.buscar_composta_indices())
+            elif opcao == '10':
                 break
     
     def adicionar_elemento(self):
@@ -98,50 +104,70 @@ class Interface:
         
         return campo, valor, comparador
 
-    def buscar_simples(self):
+    def buscar_simples_indices(self):
         campo, valor, comparador = self.buscar()
-        resultados = self.base_dados.indexador.busca_simples(campo, valor, comparador)
-        self._exibir_resultados(resultados)
-    
-    def buscar_composta(self):
+        return self.base_dados.indexador.busca_simples(campo, valor, comparador)
+
+    def buscar_simples(self):
+        resultado_indices = self.buscar_simples_indices()
+        resultado_elementos = self.base_dados.pegar_dados_disco(resultado_indices)
+        self.mostrarTabela(resultado_elementos)
+
+    def buscar_composta_indices(self):
         print("Busca 1:")
         campo1, valor1, comparador1 = self.buscar()
 
         print("Busca 2:")
         campo2, valor2, comparador2 = self.buscar()
 
-        resultados = self.base_dados.indexador.busca_composta(campo1, valor1, comparador1, campo2, valor2, comparador2)
-        self._exibir_resultados(resultados)
+        return self.base_dados.indexador.busca_composta(campo1, valor1, comparador1, campo2, valor2, comparador2)
     
-    def _exibir_resultados(self, resultados):
-        if resultados:
-            for elemento in resultados:
-                print(f"Matrícula: {elemento.matricula}, Nome: {elemento.nome}, Curso: {elemento.curso}, IAA: {elemento.iaa}, Sexo: {elemento.sexo}")
-        else:
-            print("Nenhum resultado encontrado.")
+    def buscar_composta(self):
+    
+        resultado_indices = self.buscar_composta_indices()
+        resultado_elementos = self.base_dados.pegar_dados_disco(resultado_indices)
+        self.mostrarTabela(resultado_elementos)
 
     def listar_todos_elementos(self):
         self.mostrarTabela(self.base_dados.pegar_todos_dados(), "Nenhum usuario!")
 
     def mostrarTabela(self, elementos, errorMessage=None):
+
+
         colunas = ["matricula", "nome", "curso", "iaa", "sexo"]
-        tamColuna = [3, 13, 13, 4, 10]
+        tamColuna = [9, 13, 13, 4, 10]
 
         quant = sum(tamColuna)
 
-        if elementos:
-            for i in range(quant + 46):
+        def linha():
+             for i in range(quant + 11):
                 print("-", end='')
+
+        if elementos:
+            linha()
             
             print()
 
+            #cabeçalho
+            print("| ", end='')
+            for i in range(5):
+                print(colunas[i], end='')
+                for k in range(tamColuna[i] - len(str(colunas[i]))):
+                        print(" ", end='')
+                print("| ", end='')
+            print()
+          
+            linha()
+
+            print()
+
             for elemento in elementos:
+                
                 for j in range(5):
                     # Coluna 
                     dado = getattr(elemento, colunas[j])
 
                     print("| ", end='')
-                    print(colunas[j] + ": ", end='')
                     print(dado, end='')
                     for k in range(tamColuna[j] - len(str(dado))):
                         print(" ", end='')
@@ -149,8 +175,7 @@ class Interface:
                         print("|", end='')
                 print()
             
-            for i in range(quant + 46):
-                print("-", end='')
+            linha()
     
         else:
             print()

@@ -14,27 +14,29 @@ class Indexador:
             self.indexar(dado)
     
     def indexar(self, elemento):
+        elemento.matricula = str(elemento.matricula)
         self.index_todos.append(elemento.matricula)
         self._adicionar_a_index(self.index_curso, elemento.curso, elemento.matricula)
         self._adicionar_a_index(self.index_sexo, elemento.sexo, elemento.matricula)
-        self.index_iaa.append(elemento)
+        self.index_iaa.append(elemento.matricula)
     
     def remover(self, elemento):
+        self.index_todos.remove(elemento.matricula)
         self._remover_de_index(self.index_curso, elemento.curso, elemento.matricula)
         self._remover_de_index(self.index_sexo, elemento.sexo, elemento.matricula)
         self.index_iaa.remove(elemento.matricula)
     
-    def _adicionar_a_index(self, index, chave, elemento):
+    def _adicionar_a_index(self, index, chave, matricula):
 
         # caso não tenha aquela categoria
         if chave not in index:
             index[chave] = []
 
-        index[chave].append(elemento)
+        index[chave].append(matricula)
     
-    def _remover_de_index(self, index, chave, elemento):
+    def _remover_de_index(self, index, chave, matricula):
         if chave in index:
-            index[chave].remove(elemento.matricula)
+            index[chave].remove(matricula)
 
             #se não tiver mais itens exclui a categoria
             if not index[chave]:

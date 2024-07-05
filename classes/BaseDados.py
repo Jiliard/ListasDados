@@ -12,6 +12,7 @@ class BaseDados:
         self.indexador = indexador
         self.proxima_matricula = 1
         self.disco = 'Disco.csv'
+        self.temp_disco = 'Temp.csv'
     
     def carregar_dados_iniciais(self):
         dados_iniciais = [
@@ -40,7 +41,7 @@ class BaseDados:
         
     def adicionar_elemento(self, elemento, silencioso: bool):
         #acessa o disco
-        print("Acesso ao disco")
+        print("Acesso parcial do disco")
         time.sleep(1)
 
         elemento.matricula = self.proxima_matricula
@@ -61,7 +62,7 @@ class BaseDados:
 
     def adicionar_varios_elementos(self, elementos, silencioso: bool):
         #acessa o disco
-        print("Acesso ao disco")
+        print("Acesso parcial do disco")
         time.sleep(1)
 
         for elemento in elementos:
@@ -84,16 +85,15 @@ class BaseDados:
 
     def remover_elemento(self, matricula):
         #acessa o disco
-        print("Acesso ao disco")
+        print("Acesso parcial do disco")
         time.sleep(1)
 
-        elemento = None
-        
-        if matricula not in self.indexador.pegar_todos_indices():
+        if str(matricula) not in self.indexador.pegar_todos_indices():
             print()
             print(f"O Número de Matrícula {matricula} não existe. O estudante não foi removido!")
             time.sleep(1)
             return
+            
             
         with open(self.disco, mode='r', newline='') as arquivo_original, \
             open(self.temp_disco, mode='w', newline='') as arquivo_temporario:
@@ -105,13 +105,15 @@ class BaseDados:
                 if not linha[0].isdigit() or int(linha[0]) != matricula:
                     # Escrever a linha no arquivo temporário se não começar com a matricula
                     writer.writerow(linha)
+                else:
+                    elemento_removido = Elemento(matricula=linha[0], nome=linha[1],curso=linha[2],iaa=linha[3],sexo=linha[4])
 
         # Substituir o arquivo original pelo arquivo temporário
         os.remove(self.disco)
         os.rename(self.temp_disco, self.disco)
             
 
-        self.indexador.remover(elemento)
+        self.indexador.remover(elemento_removido)
         print()
         print(f"Estudante com Número de Matrícula {matricula} removido!")
         time.sleep(1)
@@ -119,7 +121,7 @@ class BaseDados:
     
     def pegar_dados_disco(self, matriculas):
         #acessa o disco
-        print("Acesso ao disco")
+        print("Acesso parcial do disco")
         time.sleep(1)
          
         dados = []
@@ -127,7 +129,6 @@ class BaseDados:
         with open(self.disco, mode='r', newline='') as file:
             reader = csv.reader(file)
             for linha in reader:
-                self.matriculas.append(linha)
                 if linha[0] in matriculas:
                     elemento = Elemento(matricula=linha[0], nome=linha[1],curso=linha[2],iaa=linha[3],sexo=linha[4])
                     dados.append(elemento)
@@ -135,7 +136,7 @@ class BaseDados:
     
     def pegar_todos_dados(self):
         #acessa o disco
-        print("Acesso ao disco")
+        print("Acesso total do disco")
         time.sleep(1)
          
         dados = []
